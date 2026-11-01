@@ -61,6 +61,13 @@ class HuntTests(unittest.TestCase):
         import zipfile
         with zipfile.ZipFile(archive) as z: self.assertIn('workspace/profile.json',z.namelist())
         with self.assertRaises(ValueError): h.backup(self.root,argparse.Namespace(dest=str(self.root/'inside')))
+    def test_add_source_registers_and_rejects_duplicates(self):
+        doc=self.root/'old-resume.md'; doc.write_text('# Synthetic resume')
+        a=argparse.Namespace(file=str(doc),id='resume-2019',kind='document',notes=None)
+        dest=h.add_source(self.root,a); self.assertTrue(dest.is_file()); self.assertEqual(dest.name,'resume-2019.md')
+        src=h.read(self.w/'profile.json')['sources'][0]
+        self.assertEqual(src['id'],'resume-2019'); self.assertEqual(src['locator'],'sources/resume-2019.md'); self.assertEqual(h.validate(self.root),[])
+        with self.assertRaises(ValueError): h.add_source(self.root,a)
     def test_uninitialized_workspace_message(self):
         shutil.rmtree(self.w)
         with self.assertRaises(ValueError) as ctx: h.validate(self.root)

@@ -54,6 +54,21 @@ def add_sample(root,a):
     write(w/'corpus.json',corpus)
     return p
 
+def add_source(root,a):
+    """Copy a candidate-supplied document (old resume, LinkedIn export, transcript) into workspace/sources and register it as career evidence."""
+    w = initialize(root)
+    if not re.fullmatch('[a-z0-9][a-z0-9-]*',a.id): raise ValueError('Invalid source ID; use lowercase letters, digits, and hyphens')
+    src = Path(a.file)
+    if not src.is_file(): raise ValueError(f'No such file: {src}')
+    dest = w/'sources'/(a.id+src.suffix.lower())
+    if dest.exists(): raise ValueError('Source file already exists')
+    profile = read(w/'profile.json')
+    if any(x['id']==a.id for x in profile['sources']): raise ValueError('Duplicate source ID')
+    shutil.copyfile(src,dest)
+    profile['sources'].append(dict(id=a.id,kind=a.kind,locator=dest.relative_to(w).as_posix(),captured_at=now(),notes=a.notes or f'Imported {src.name}; sha256 {sha(dest)}'))
+    write(w/'profile.json',profile)
+    return dest
+
 def new_job(root,a):
     w = initialize(root)
     ident = slug(a.company)+'-'+slug(a.role)
@@ -200,6 +215,8 @@ def main():
     a=sub.add_parser('add-sample'); a.add_argument('file')
     for f in ['id','genre','locator']: a.add_argument('--'+f,required=True)
     a.add_argument('--authorship',choices=['candidate','mixed','unknown'],required=True)
+    so=sub.add_parser('add-source',help='import an old resume or other career document as evidence'); so.add_argument('file')
+    so.add_argument('--id',required=True); so.add_argument('--kind',choices=['document','email','message','portfolio','interview'],default='document'); so.add_argument('--notes')
     j=sub.add_parser('new-job'); j.add_argument('company'); j.add_argument('role'); j.add_argument('--url'); j.add_argument('--description')
     e=sub.add_parser('export'); e.add_argument('file'); e.add_argument('--format',choices=['docx','pdf'],required=True)
     args=p.parse_args()
@@ -211,6 +228,7 @@ def main():
         elif args.command=='init': result=initialize(ROOT)
         elif args.command=='render-cv': result=render_cv(ROOT)
         elif args.command=='add-sample': result=add_sample(ROOT,args)
+        elif args.command=='add-source': result=add_source(ROOT,args)
         elif args.command=='new-job': result=new_job(ROOT,args)
         elif args.command=='status': result=status(ROOT)
         elif args.command=='refresh-snapshot': result=refresh_snapshot(ROOT,args)
