@@ -1,6 +1,6 @@
 # Operating playbook
 ## First session
-Initialize; ask the candidate for preferred name, contact details for applications, desired roles, geography, and existing CV. Accept incomplete inputs and keep missing facts in open_questions. Collect career inventory and writing samples independently so one does not block the other.
+The candidate opens the folder in Claude Code and says "Use start-job-search". That skill installs uv if needed (with consent), initializes the workspace, and asks for preferred name, contact details for applications, desired roles, geography, and existing CV. Accept incomplete inputs and keep missing facts in open_questions. Collect career inventory and writing samples independently so one does not block the other.
 
 ## Build once, improve continuously
 Select writings → retain authored excerpts and provenance → learn a draft voice → calibrate → generate the candidate voice skill. Inventory work, education, projects, volunteering, awards, certificates, and publications → interview for missing context → confirm claims → render the exhaustive CV. Keep older detail even when it is not currently useful. Resolve discrepancies by recording both accounts and asking a targeted question; never silently choose the more impressive claim.
@@ -27,6 +27,7 @@ Draft Markdown first. Optional `export` uses an existing Pandoc installation; it
 JSON is the canonical editable data; Markdown is the review format. The master CV keeps every detail and short resumes are generated as separate views. IDs connect sources to claims to resume and letter evidence, so every sentence in a draft can be traced back to its evidence.
 
 ## Commands
+The agent runs these; the candidate never needs to.
 ```bash
 uv run scripts/hunt.py init
 uv run scripts/hunt.py status
