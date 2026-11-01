@@ -1,7 +1,7 @@
 [project]
 name = "job-hunt-kit"
 version = "0.1.0"
-description = "Private, agent-operated workspace for one candidate's job search"
+description = "Agent-operated workspace for one candidate's job search"
 requires-python = ">=3.10"
 dependencies = []
 
