@@ -6,25 +6,36 @@ You never need to type commands. You talk to Claude, and Claude does the rest. Y
 ## Setup
 1. Install [Claude Code](https://claude.com/claude-code) and sign in.
 2. Get this folder onto your computer: clone it, or use "Code → Download ZIP" on GitHub and unzip it.
-3. Open the folder in Claude Code and say:
+3. Open the folder in Claude Code.
 
-   **"Use start-job-search."**
+That's it. The first time Claude needs a small helper tool, it will ask you before installing it.
 
-   Claude sets up your workspace, asks a few questions about you, and explains what comes next. If it needs to install a small helper tool, it will ask you first.
+## Using it
+Paste a job posting and say:
 
-## What to say next
-The simplest way: paste a job posting and say **"Help me apply for this job."** Claude saves the posting, then asks for whatever it still needs, such as your writing samples and your work history, before drafting the resume and cover letter.
+**"Help me apply for this job."**
 
-If you prefer to go one step at a time, each of these starts a guided step:
+Claude saves the posting, then builds whatever it still needs before it can write truthfully:
 
-1. **"Use build-writing-corpus with these files. Include only passages I wrote."** Give it a few emails or documents you wrote yourself.
-2. **"Use learn-candidate-voice to build my personal writing style."** Correct anything that sounds wrong, then approve.
-3. **"Use assemble-master-cv. Interview me about every job, school, and project I've had."** This is the long step. Keep everything; short resumes come later.
-4. **"Use create-targeted-resume for this job."** Paste the job posting.
-5. **"Use write-cover-letter for that job."**
-6. **"Use review-application to check it."** Then submit the application yourself.
+- **Your details.** Name, contact information, and the kinds of roles you want.
+- **Your writing samples.** A few emails or documents you wrote yourself, so your cover letters sound like you. Claude shows you a style profile to approve.
+- **Your work history.** Claude interviews you about every job, school, and project. This is the long part and usually takes a few sittings. Keep everything; short resumes come later.
 
-After the first job, steps 1 to 3 are done and each new job is just steps 4 to 6.
+Then it drafts the resume and cover letter, reviews them against your history and the posting, and hands them to you. You submit the application yourself.
+
+After the first job, all of that is already built, and each new posting takes one conversation.
+
+Don't have a posting yet? Say **"Use start-job-search"** and Claude will set things up and start the interview.
+
+## Going one step at a time
+Each of these runs a single stage on its own:
+
+- "Use build-writing-corpus with these files. Include only passages I wrote."
+- "Use learn-candidate-voice to build my personal writing style."
+- "Use assemble-master-cv. Interview me about every job, school, and project I've had."
+- "Use create-targeted-resume for this job."
+- "Use write-cover-letter for that job."
+- "Use review-application to check it."
 
 ## Keep your data safe
 - Everything you paste or let Claude read is sent to Anthropic. Only share your own writing and work history. Never share other people's emails, passwords, or account numbers.
