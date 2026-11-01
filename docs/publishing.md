@@ -13,4 +13,6 @@ cd job-hunt-kit
 git remote remove bundle
 python3 scripts/hunt.py init
 ```
-Then use the private publish command above. A bundle preserves committed source and history; it does not create a hosted repository or contain ignored candidate data. Keep the resulting repository private. This workspace uses repository-scoped skills; no global installation is needed.
+Then use the private publish command above. To give the candidate access to the private repository, add their GitHub account as a collaborator (`gh repo edit --add-collaborator USERNAME` or the repository settings page) and have them `git clone` it. Alternatively copy the folder to their machine directly; the ignored `workspace/` folder is theirs and must be created with `init` on their machine, not copied from someone else's.
+
+A bundle preserves committed source and history; it does not create a hosted repository or contain ignored candidate data. Keep the resulting repository private. This workspace uses repository-scoped skills; no global installation is needed.

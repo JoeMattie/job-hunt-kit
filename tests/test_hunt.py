@@ -43,6 +43,27 @@ class HuntTests(unittest.TestCase):
         h.write(self.w/'profile.json',p); self.assertEqual(h.validate(self.root),[])
         text=h.render_cv(self.root).read_text()
         for value in ['Long story','methods','Built a fixture','answer 1']: self.assertIn(value,text)
+    def test_closed_packet_ignores_profile_changes_and_refresh_clears_active(self):
+        folder=self.job(); a=h.read(folder/'application.json'); a['status']='closed'; h.write(folder/'application.json',a)
+        p=h.read(self.w/'profile.json'); p['candidate']['name']='Changed'; h.write(self.w/'profile.json',p)
+        self.assertFalse(any('profile changed' in e for e in h.validate(self.root)))
+        a['status']='draft'; h.write(folder/'application.json',a)
+        self.assertTrue(any('refresh-snapshot' in e for e in h.validate(self.root)))
+        h.refresh_snapshot(self.root,argparse.Namespace(job=a['id'])); self.assertEqual(h.validate(self.root),[])
+        with self.assertRaises(ValueError): h.refresh_snapshot(self.root,argparse.Namespace(job='nope'))
+    def test_status_and_backup(self):
+        self.job(); text=h.status(self.root)
+        self.assertIn('example-coordinator',text); self.assertIn('draft',text); self.assertIn('Voice: unlearned',text)
+        dest=self.root.parent/(self.root.name+'-backups')
+        archive=Path(h.backup(self.root,argparse.Namespace(dest=str(dest))).split('\n')[0]); self.addCleanup(shutil.rmtree,dest)
+        self.assertTrue(archive.is_file())
+        import zipfile
+        with zipfile.ZipFile(archive) as z: self.assertIn('workspace/profile.json',z.namelist())
+        with self.assertRaises(ValueError): h.backup(self.root,argparse.Namespace(dest=str(self.root/'inside')))
+    def test_uninitialized_workspace_message(self):
+        shutil.rmtree(self.w)
+        with self.assertRaises(ValueError) as ctx: h.validate(self.root)
+        self.assertIn('init',str(ctx.exception))
     def test_corpus_path_escape_rejected(self):
         h.write(self.w/'corpus.json',{'samples':[dict(id='escape',path='../outside.txt',sha256='x',approved=False,authorship='unknown')]})
         self.assertTrue(any('Unsafe' in e for e in h.validate(self.root)))
