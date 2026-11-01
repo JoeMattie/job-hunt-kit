@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local bookkeeping for an agent-assisted job hunt; Python 3.10+, no dependencies."""
+"""Local bookkeeping for an agent-assisted job hunt; run with `uv run scripts/hunt.py`. Python 3.10+, no dependencies."""
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -27,7 +27,7 @@ def slug(s):
 
 def workspace(root):
     w = root/'workspace'
-    if not (w/'profile.json').is_file(): raise ValueError('Workspace not initialized; run: python3 scripts/hunt.py init')
+    if not (w/'profile.json').is_file(): raise ValueError('Workspace not initialized; run: uv run scripts/hunt.py init')
     return w
 
 def initialize(root):
@@ -124,7 +124,7 @@ def validate(root):
         check(a['schema_version']==1,prefix+'unsupported version')
         check(a['status'] in ALL_STATUSES,prefix+'unknown status')
         if a['status'] in ACTIVE_STATUSES:
-            check(a['profile_snapshot_sha256']==sha(w/'profile.json'),prefix+'profile changed since this draft; recheck its evidence, then run: python3 scripts/hunt.py refresh-snapshot '+a['id'])
+            check(a['profile_snapshot_sha256']==sha(w/'profile.json'),prefix+'profile changed since this draft; recheck its evidence, then run: uv run scripts/hunt.py refresh-snapshot '+a['id'])
         reqs=index(a['requirements'],prefix+'requirement')
         for q in reqs.values():
             check(q['priority'] in {'required','preferred'},prefix+'unknown requirement priority')

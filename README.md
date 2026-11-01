@@ -5,12 +5,16 @@ A private workspace where an AI coding agent (Claude Code, or Codex) helps one p
 You do not need to know how to code. You will type a few commands in a terminal and otherwise just talk to Claude.
 
 **One-time setup (whoever set this up can do this with you)**
-1. Install Python 3.10 or newer. On a Mac, open Terminal and run `python3 --version`; if it offers to install developer tools, accept.
+1. Install uv, which manages Python for you. On a Mac, open Terminal and run:
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
+   Then close and reopen Terminal. You do not need to install Python separately; `uv run` downloads the right version the first time.
 2. Install Claude Code and sign in (https://claude.com/claude-code).
 3. Get this folder onto your computer. Either clone the private GitHub repository (the owner adds your GitHub account as a collaborator) or have the owner copy the folder over. See `docs/publishing.md`.
 4. Open the folder in Claude Code and run, in its terminal:
    ```bash
-   python3 scripts/hunt.py init
+   uv run scripts/hunt.py init
    ```
    This creates your private `workspace/` folder. It is never uploaded to GitHub.
 
@@ -19,7 +23,7 @@ Each line is something you say to Claude in this folder. It reads the matching s
 1. "Use build-writing-corpus with these files. Include only passages I wrote." Give it a few emails, documents, or messages you wrote yourself. It keeps only your own words and asks when authorship is unclear.
 2. "Use learn-candidate-voice to build my personal writing style." It shows you a style profile and two short sample drafts. Correct anything that sounds wrong, then approve.
 3. "Use assemble-master-cv. Interview me about every role, education item, and project, preserving all details." This is the long step, often several sessions. Keep everything, even old or minor items; short resumes are generated later.
-4. For each job: run `python3 scripts/hunt.py new-job "Company" "Role" --url https://...`, then say "Use create-targeted-resume for this application folder and this job description" and paste the posting text.
+4. For each job: run `uv run scripts/hunt.py new-job "Company" "Role" --url https://...`, then say "Use create-targeted-resume for this application folder and this job description" and paste the posting text.
 5. "Use write-cover-letter for that application, using my approved voice."
 6. "Use review-application to check the packet." Read the review, make edits, and submit the application yourself. The kit never submits anything.
 
@@ -27,14 +31,14 @@ Each line is something you say to Claude in this folder. It reads the matching s
 - Anything you paste or let Claude read is sent to the AI provider (Anthropic for Claude Code). Only give it your own writing. Do not import other people's emails, shared inboxes, or anything containing passwords or account numbers.
 - Your whole job search lives in `workspace/`. Back it up regularly:
   ```bash
-  python3 scripts/hunt.py backup
+  uv run scripts/hunt.py backup
   ```
   This writes a dated zip to `~/Documents/job-hunt-kit-backups` (or `--dest` a folder you choose). Keep it private.
 - See `docs/privacy.md` for the full rules.
 
 **Checking where things stand**
 ```bash
-python3 scripts/hunt.py status
+uv run scripts/hunt.py status
 ```
 Lists your CV progress, writing samples, voice approval, and every application with its status.
 
@@ -49,16 +53,16 @@ JSON is the canonical editable data; Markdown is the review format. The master C
 
 ## Commands
 ```bash
-python3 scripts/hunt.py init
-python3 scripts/hunt.py status
-python3 scripts/hunt.py add-sample path/to/authored-excerpt.txt --id sample-001 --genre email --locator 'selected email, authored body' --authorship candidate
-python3 scripts/hunt.py render-cv
-python3 scripts/hunt.py new-job acme coordinator --description path/to/job.txt
-python3 scripts/hunt.py validate
-python3 scripts/hunt.py refresh-snapshot acme-coordinator
-python3 scripts/hunt.py backup
-python3 scripts/hunt.py export workspace/applications/acme-coordinator/resume.md --format docx
-python3 -m unittest discover -s tests -v
+uv run scripts/hunt.py init
+uv run scripts/hunt.py status
+uv run scripts/hunt.py add-sample path/to/authored-excerpt.txt --id sample-001 --genre email --locator 'selected email, authored body' --authorship candidate
+uv run scripts/hunt.py render-cv
+uv run scripts/hunt.py new-job acme coordinator --description path/to/job.txt
+uv run scripts/hunt.py validate
+uv run scripts/hunt.py refresh-snapshot acme-coordinator
+uv run scripts/hunt.py backup
+uv run scripts/hunt.py export workspace/applications/acme-coordinator/resume.md --format docx
+uv run python -m unittest discover -s tests -v
 ```
 Notes:
 - `add-sample` takes UTF-8 `.txt` or `.md` excerpts. For PDF, DOCX, or mailbox formats, have the agent extract and review the text first; OCR errors, quoted replies, signatures, and other authors must be removed or attributed.

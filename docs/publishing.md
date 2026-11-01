@@ -11,7 +11,7 @@ For a Git bundle delivery:
 git clone --origin bundle /path/to/job-hunt-kit.bundle job-hunt-kit
 cd job-hunt-kit
 git remote remove bundle
-python3 scripts/hunt.py init
+uv run scripts/hunt.py init
 ```
 Then use the private publish command above. To give the candidate access to the private repository, add their GitHub account as a collaborator (`gh repo edit --add-collaborator USERNAME` or the repository settings page) and have them `git clone` it. Alternatively copy the folder to their machine directly; the ignored `workspace/` folder is theirs and must be created with `init` on their machine, not copied from someone else's.
 
