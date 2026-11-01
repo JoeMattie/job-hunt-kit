@@ -1,0 +1,11 @@
+# Application review
+- Job snapshot and capture date:
+- Missing or stale information:
+- Requirement coverage and genuine gaps:
+- Unsupported claims / conflicts:
+- Voice rules used, with sample IDs:
+- Repetition between letter and resume:
+- Placeholder / contact / link checks:
+- DOCX/PDF visual and text extraction checks:
+- Candidate feedback and remaining decisions:
+- Submission: not submitted

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "id": "",
+  "company": "",
+  "role": "",
+  "url": null,
+  "captured_at": null,
+  "status": "draft",
+  "profile_snapshot_sha256": null,
+  "requirements": [],
+  "evidence": [],
+  "open_questions": [],
+  "review": {
+    "facts_checked": false,
+    "voice_checked": false,
+    "layout_checked": false,
+    "approved_by": null
+  }
+}

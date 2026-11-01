@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "name": "",
+    "email": "",
+    "phone": "",
+    "location": "",
+    "links": []
+  },
+  "preferences": {
+    "target_roles": [],
+    "location_constraints": [],
+    "resume_pages": 2,
+    "cover_letter_words": [
+      250,
+      350
+    ]
+  },
+  "sources": [],
+  "entries": [],
+  "claims": [],
+  "open_questions": []
+}
