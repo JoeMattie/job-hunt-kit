@@ -54,6 +54,7 @@ class HuntTests(unittest.TestCase):
     def test_status_and_backup(self):
         self.job(); text=h.status(self.root)
         self.assertIn('example-coordinator',text); self.assertIn('draft',text); self.assertIn('Voice: unlearned',text)
+        self.assertIn('not yet',text); self.assertIn('assemble-master-cv',text); self.assertIn('learn-candidate-voice',text)
         dest=self.root.parent/(self.root.name+'-backups')
         archive=Path(h.backup(self.root,argparse.Namespace(dest=str(dest))).split('\n')[0]); self.addCleanup(shutil.rmtree,dest)
         self.assertTrue(archive.is_file())

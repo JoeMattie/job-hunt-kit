@@ -13,7 +13,9 @@ You never need to type commands. You talk to Claude, and Claude does the rest. Y
    Claude sets up your workspace, asks a few questions about you, and explains what comes next. If it needs to install a small helper tool, it will ask you first.
 
 ## What to say next
-Each of these starts a guided step. Do them in order the first time.
+The simplest way: paste a job posting and say **"Help me apply for this job."** Claude saves the posting, then asks for whatever it still needs, such as your writing samples and your work history, before drafting the resume and cover letter.
+
+If you prefer to go one step at a time, each of these starts a guided step:
 
 1. **"Use build-writing-corpus with these files. Include only passages I wrote."** Give it a few emails or documents you wrote yourself.
 2. **"Use learn-candidate-voice to build my personal writing style."** Correct anything that sounds wrong, then approve.
@@ -22,7 +24,7 @@ Each of these starts a guided step. Do them in order the first time.
 5. **"Use write-cover-letter for that job."**
 6. **"Use review-application to check it."** Then submit the application yourself.
 
-Repeat steps 4 to 6 for each job.
+After the first job, steps 1 to 3 are done and each new job is just steps 4 to 6.
 
 ## Keep your data safe
 - Everything you paste or let Claude read is sent to Anthropic. Only share your own writing and work history. Never share other people's emails, passwords, or account numbers.

@@ -148,14 +148,25 @@ def refresh_snapshot(root,a):
     app = read(path); app['profile_snapshot_sha256'] = sha(w/'profile.json'); write(path,app)
     return f'{a.job}: snapshot refreshed to current profile; evidence must already have been rechecked'
 
+def readiness(p, corpus, voice):
+    """Prerequisites for drafting an application, in the order skills should satisfy them."""
+    missing = []
+    if not p['candidate']['name']: missing.append('contact details are empty (start-job-search)')
+    if not any(c['status']=='confirmed' for c in p['claims']): missing.append('no confirmed career claims (assemble-master-cv)')
+    if not any(s['approved'] for s in corpus['samples']): missing.append('no approved writing samples (build-writing-corpus)')
+    if voice['status']!='approved': missing.append('voice not approved (learn-candidate-voice)')
+    return missing
+
 def status(root):
     w = workspace(root); p = read(w/'profile.json'); corpus = read(w/'corpus.json'); voice = read(w/'voice/profile.json')
     by_status = {}
     for c in p['claims']: by_status[c['status']] = by_status.get(c['status'],0)+1
+    missing = readiness(p, corpus, voice)
     lines = [f"Candidate: {p['candidate']['name'] or '(name not set)'}",
              f"Master CV: {len(p['entries'])} entries, {len(p['claims'])} claims"+(' ('+', '.join(f'{k} {v}' for k,v in sorted(by_status.items()))+')' if by_status else '')+f", {len(p['open_questions'])} open questions",
              f"Writing samples: {sum(1 for s in corpus['samples'] if s['approved'])} approved of {len(corpus['samples'])}",
-             f"Voice: {voice['status']}", '', 'Applications:']
+             f"Voice: {voice['status']}",
+             'Ready to draft applications: '+('yes' if not missing else 'not yet'), *('  - missing: '+m for m in missing), '', 'Applications:']
     apps = sorted((w/'applications').glob('*/application.json'))
     if not apps: lines.append('  (none yet; run new-job)')
     for path in apps:

@@ -5,7 +5,7 @@ description: Assemble or update an exhaustive structured master CV from candidat
 
 # Assemble Master Cv
 
-1. Read AGENTS.md and docs/data-model.md. Use workspace/profile.json as canonical source; do not overwrite it with a shorter resume. Read existing records before editing.
+1. Read AGENTS.md and docs/data-model.md. If workspace/ is absent or the candidate name is empty, follow start-job-search first. Use workspace/profile.json as canonical source; do not overwrite it with a shorter resume. Read existing records before editing.
 2. Inventory every role, education item (including incomplete programs), personal project, volunteering role, certificate, award, and publication. Ask one focused batch at a time about dates, exact titles, responsibilities, tools, context, decisions, collaborators, outcomes, and links. Include career breaks only as the candidate wishes; do not infer reasons.
 3. Create stable source, entry, and claim IDs. Preserve exhaustive narrative and arbitrary structured details. Record team vs individual attribution and exact vs approximate metrics with basis. Confirm candidate assertions through interview responses or selected evidence. Use proposed/disputed for unresolved statements and retain conflict notes.
 4. Keep dates at known precision. Never upgrade attendance to a completed degree, familiarity to expertise, or a personal project to employment. Preserve superseded claims as retired rather than erasing their provenance.

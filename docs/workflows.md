@@ -2,6 +2,9 @@
 ## First session
 The candidate opens the folder in Claude Code and says "Use start-job-search". That skill installs uv if needed (with consent), initializes the workspace, and asks for preferred name, contact details for applications, desired roles, geography, and existing CV. Accept incomplete inputs and keep missing facts in open_questions. Collect career inventory and writing samples independently so one does not block the other.
 
+## Skills chain
+Every skill starts by running `status`, which lists the prerequisites still missing in order. A skill that finds one missing follows the prerequisite skill to completion and then resumes. So a candidate can begin with a job posting on a fresh install: the posting is saved, setup and the career interview and voice learning happen as needed, and drafting continues afterwards.
+
 ## Build once, improve continuously
 Select writings → retain authored excerpts and provenance → learn a draft voice → calibrate → generate the candidate voice skill. Inventory work, education, projects, volunteering, awards, certificates, and publications → interview for missing context → confirm claims → render the exhaustive CV. Keep older detail even when it is not currently useful. Resolve discrepancies by recording both accounts and asking a targeted question; never silently choose the more impressive claim.
 
