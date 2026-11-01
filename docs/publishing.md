@@ -8,8 +8,9 @@ Check visibility is PRIVATE. If the name already exists, inspect it first; choos
 
 For a Git bundle delivery:
 ```bash
-git clone /path/to/job-hunt-kit.bundle job-hunt-kit
+git clone --origin bundle /path/to/job-hunt-kit.bundle job-hunt-kit
 cd job-hunt-kit
+git remote remove bundle
 python3 scripts/hunt.py init
 ```
 Then use the private publish command above. A bundle preserves committed source and history; it does not create a hosted repository or contain ignored candidate data. Keep the resulting repository private. This workspace uses repository-scoped skills; no global installation is needed.
