@@ -17,7 +17,21 @@
     ]
   },
   "sources": [],
-  "entries": [],
+  "entries": [
+    {
+      "id": "candidate-statements",
+      "kind": "statement",
+      "organization": "",
+      "title": "Candidate statements",
+      "start": null,
+      "end": null,
+      "location": "",
+      "narrative": "Facts the candidate stated that belong to no single role: licenses, certifications held or in progress, availability, willingness to train, stated motivations for a specific application. Each is a claim sourced to the interview answer.",
+      "claim_ids": [],
+      "details": {}
+    }
+  ],
   "claims": [],
-  "open_questions": []
+  "open_questions": [],
+  "inventory_reviewed_at": null
 }

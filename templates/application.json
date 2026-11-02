@@ -10,6 +10,7 @@
   "requirements": [],
   "evidence": [],
   "open_questions": [],
+  "voice_mode": "learned",
   "review": {
     "facts_checked": false,
     "voice_checked": false,
