@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Local bookkeeping for an agent-assisted job hunt; run with `uv run -q scripts/hunt.py`. Python 3.10+, no dependencies."""
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime
 import hashlib
 import json
 from pathlib import Path
@@ -23,7 +23,7 @@ def write(p, obj):
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(obj, indent=2, ensure_ascii=False)+'\n', encoding='utf-8')
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
-def now(): return datetime.now(timezone.utc).isoformat()
+def now(): return datetime.now().astimezone().isoformat(timespec='seconds')  # local time with offset, so dates match the candidate's day
 def today(): return datetime.now().strftime('%Y-%m-%d')
 def slug(s):
     s = re.sub('[^a-z0-9]+', '-', s.lower()).strip('-')
@@ -119,7 +119,7 @@ def fmt_question(q):
     parts = [str(q.get('question', ''))]
     if q.get('related'): parts.append('related: '+', '.join(map(str, q['related'])))
     if q.get('resolution'): parts.append('resolution: '+str(q['resolution']))
-    return ' ('.join(parts)+')' if len(parts) > 1 else parts[0]
+    return parts[0] + ''.join(f' ({x})' for x in parts[1:])
 
 def render_cv(root):
     w = initialize(root); p = read(w/'profile.json'); claims = {c['id']: c for c in p['claims']}

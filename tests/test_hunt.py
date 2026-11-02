@@ -111,6 +111,7 @@ class HuntTests(unittest.TestCase):
         p['open_questions']=[{'question':'Start month?','related':['work-a']}]; h.write(self.w/'profile.json',p)
         text=h.render_cv(self.root).read_text()
         self.assertLess(text.index('# Work'),text.index('# Education')); self.assertIn('courses: 2 items',text); self.assertIn('Start month? (related: work-a)',text); self.assertNotIn('"courses"',text)
+        self.assertEqual(h.fmt_question({'question':'Q?','related':['a'],'resolution':'done'}),'Q? (related: a) (resolution: done)')
     def test_uninitialized_workspace_message(self):
         shutil.rmtree(self.w)
         with self.assertRaises(ValueError) as ctx: h.validate(self.root)
