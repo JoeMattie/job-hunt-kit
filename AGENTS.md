@@ -10,7 +10,7 @@ Read this file at the start of every task. Use the candidate identity in `worksp
 - A job posting, "apply for this", or job-specific resume → `.agents/skills/create-targeted-resume/SKILL.md`. It pulls in every missing prerequisite itself.
 - Cover letter → `.agents/skills/write-cover-letter/SKILL.md`.
 - Final check → `.agents/skills/review-application/SKILL.md`.
-- "Where do things stand" → run `uv run -q scripts/hunt.py status` and explain it. "Back up my job search" → run `uv run -q scripts/hunt.py backup` and report where the zip landed.
+- "Where do things stand" → run `uv run -q scripts/hunt.py status` and explain it. "Back up my job search" → run `uv run -q scripts/hunt.py backup` and report where the zip landed, noting if that folder is cloud-synced. "Restore my job search" → with no `workspace/` present, unzip the candidate's backup so `workspace/` sits at the top of this folder, then run `status`; never overwrite an existing workspace without an explicit instruction.
 The candidate talks to you; they are not expected to open a terminal. Run `scripts/hunt.py` yourself and never ask them to type commands. If `workspace/` is missing, run `uv run -q scripts/hunt.py init` before anything else. Read `docs/data-model.md` before editing JSON. Run `uv run -q scripts/hunt.py validate` after data changes; use `status` to see packets, and `refresh-snapshot JOB-ID` only after rechecking that packet's evidence. Never edit snapshot hashes by hand.
 
 ## Skills chain

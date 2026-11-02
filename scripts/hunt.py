@@ -42,7 +42,7 @@ def initialize(root):
     w.mkdir(exist_ok=True)
     for src, dest in [('profile.json','profile.json'),('corpus.json','corpus.json'),('style-profile.json','voice/profile.json')]:
         if not (w/dest).exists(): write(w/dest, read(root/'templates'/src))
-    for d in ['corpus/excerpts','sources','applications']: (w/d).mkdir(parents=True, exist_ok=True)
+    for d in ['corpus/excerpts','sources','applications','inbox']: (w/d).mkdir(parents=True, exist_ok=True)
     return w
 
 def add_sample(root, a):
@@ -123,11 +123,8 @@ def fmt_question(q):
 
 def render_cv(root):
     w = initialize(root); p = read(w/'profile.json'); claims = {c['id']: c for c in p['claims']}
-    order = {k: i for i, k in enumerate(ENTRY_KINDS)}
-    entries = sorted(p['entries'], key=lambda e: (order.get(e['kind'], 99), str(e.get('start') or '0')), reverse=False)
-    entries = sorted(entries, key=lambda e: order.get(e['kind'], 99))  # stable: kind order, then by start desc within kind
     grouped = {}
-    for e in entries: grouped.setdefault(e['kind'], []).append(e)
+    for e in p['entries']: grouped.setdefault(e['kind'], []).append(e)
     lines = ['# '+(p['candidate']['name'] or 'Candidate')+' — master CV', '', 'Exhaustive working inventory; claim status labels are not submission prose.', '']
     for kind in ENTRY_KINDS:
         if kind not in grouped: continue
@@ -138,6 +135,7 @@ def render_cv(root):
             head = e['title'] + (f' — {e["organization"]}' if e.get('organization') else '')
             lines += [f'## {head}', '', f'{e["id"]}{dates}{where}', '', e.get('narrative', ''), '']
             for cid in e['claim_ids']:
+                if cid not in claims: raise ValueError(f'Entry {e["id"]} lists unknown claim {cid}; run: uv run -q scripts/hunt.py validate')
                 c = claims[cid]; refs = '; '.join(f'{x["source_id"]}: {x["locator"]}' for x in c['source_refs'])
                 lines += [f'- [{c["status"]}] {c["text"]} ({cid}; {refs})']
                 if c.get('metrics'): lines += ['  Metrics: '+json.dumps(c['metrics'], ensure_ascii=False)]
@@ -168,7 +166,7 @@ def validate(root):
         check(c['entry_id'] in entries and c['id'] in entries[c['entry_id']]['claim_ids'], f'Orphan claim: {c["id"]}')
         check(c['status']!='confirmed' or bool(c['source_refs']), f'Confirmed claim lacks evidence: {c["id"]}')
         for ref in c['source_refs']: check(ref['source_id'] in sources and bool(ref['locator']), f'Invalid source: {c["id"]}')
-    corpus = read(w/'corpus.json'); samples = index(corpus['samples'], 'sample')
+    corpus = read(w/'corpus.json'); check(corpus.get('schema_version')==1, 'Unsupported corpus version'); samples = index(corpus['samples'], 'sample')
     hashes = [s['sha256'] for s in samples.values()]; check(len(hashes)==len(set(hashes)), 'Duplicate sample content')
     for s in samples.values():
         path = (w/s['path']).resolve(); safe = path.is_relative_to(w.resolve()); check(safe, f'Unsafe sample path: {s["id"]}')
@@ -176,7 +174,7 @@ def validate(root):
             check(path.is_file(), f'Missing sample: {s["id"]}')
             if path.is_file(): check(sha(path)==s['sha256'], f'Changed sample hash: {s["id"]}')
         check(not s['approved'] or s['authorship']=='candidate', f'Unattributed approved sample: {s["id"]}')
-    voice = read(w/'voice/profile.json'); check(voice['status'] in {'unlearned','draft','approved'}, 'Unknown voice status')
+    voice = read(w/'voice/profile.json'); check(voice.get('schema_version')==1, 'Unsupported voice profile version'); check(voice['status'] in {'unlearned','draft','approved'}, 'Unknown voice status')
     for sid in voice['sample_ids']: check(sid in samples and samples[sid]['approved'], f'Invalid voice sample: {sid}')
     for rule in voice['rules']:
         check(bool(rule['sample_ids']), 'Voice rule lacks evidence')
@@ -211,7 +209,7 @@ def validate(root):
     return errors
 
 def refresh_snapshot(root, a):
-    w = workspace(root); path = w/'applications'/a.job/'application.json'
+    w = workspace(root); valid_id(a.job); path = w/'applications'/a.job/'application.json'
     if not path.is_file(): raise ValueError(f'No application named {a.job}; run status to list them')
     app = read(path); app['profile_snapshot_sha256'] = sha(w/'profile.json'); write(path, app)
     return f'{a.job}: snapshot refreshed to current profile; evidence must already have been rechecked'
@@ -264,7 +262,7 @@ def backup(root, a):
     dest.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now().strftime('%Y%m%d-%H%M%S')
     archive = shutil.make_archive(str(dest/f'workspace-{stamp}'), 'zip', root_dir=root, base_dir='workspace')
-    return f'{archive}\nThis zip holds all personal data; keep it somewhere private and delete old copies you no longer need.'
+    return f'{archive}\nThis zip holds all personal data; keep it somewhere private and delete old copies you no longer need. If that folder syncs to a cloud drive (Documents often syncs to iCloud on a Mac), the zip is uploaded there too.'
 
 def export_file(root, a):
     source = Path(a.file).resolve()

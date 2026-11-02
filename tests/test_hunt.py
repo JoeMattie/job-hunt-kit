@@ -55,6 +55,9 @@ class HuntTests(unittest.TestCase):
         self.assertTrue(any('refresh-snapshot' in e for e in h.validate(self.root)))
         h.refresh_snapshot(self.root,argparse.Namespace(job=a['id'])); self.assertEqual(h.validate(self.root),[])
         with self.assertRaises(ValueError): h.refresh_snapshot(self.root,argparse.Namespace(job='nope'))
+        outside=self.root/'outside'; outside.mkdir(); h.write(outside/'application.json',{'x':1})
+        with self.assertRaises(ValueError): h.refresh_snapshot(self.root,argparse.Namespace(job='../../outside'))
+        self.assertNotIn('profile_snapshot_sha256',h.read(outside/'application.json'))
     def test_status_and_backup(self):
         self.job(); text=h.status(self.root)
         self.assertIn('example-coordinator',text); self.assertIn('draft',text); self.assertIn('Voice: unlearned',text)
@@ -112,6 +115,15 @@ class HuntTests(unittest.TestCase):
         text=h.render_cv(self.root).read_text()
         self.assertLess(text.index('# Work'),text.index('# Education')); self.assertIn('courses: 2 items',text); self.assertIn('Start month? (related: work-a)',text); self.assertNotIn('"courses"',text)
         self.assertEqual(h.fmt_question({'question':'Q?','related':['a'],'resolution':'done'}),'Q? (related: a) (resolution: done)')
+    def test_init_creates_inbox_and_render_names_dangling_claim(self):
+        self.assertTrue((self.w/'inbox').is_dir())
+        p=h.read(self.w/'profile.json'); p['entries'][0]['claim_ids']=['candidate-statements-99']; h.write(self.w/'profile.json',p)
+        with self.assertRaises(ValueError) as ctx: h.render_cv(self.root)
+        self.assertIn('candidate-statements lists unknown claim candidate-statements-99',str(ctx.exception))
+    def test_corpus_and_voice_versions_checked(self):
+        c=h.read(self.w/'corpus.json'); c['schema_version']=2; h.write(self.w/'corpus.json',c)
+        v=h.read(self.w/'voice/profile.json'); del v['schema_version']; h.write(self.w/'voice/profile.json',v)
+        errors=h.validate(self.root); self.assertTrue(any('corpus version' in e for e in errors)); self.assertTrue(any('voice profile version' in e for e in errors))
     def test_uninitialized_workspace_message(self):
         shutil.rmtree(self.w)
         with self.assertRaises(ValueError) as ctx: h.validate(self.root)

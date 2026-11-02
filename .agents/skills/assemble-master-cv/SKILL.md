@@ -3,7 +3,7 @@ name: assemble-master-cv
 description: Assemble or update an exhaustive structured master CV from candidate-provided work, education, projects, interviews, and supporting evidence.
 ---
 
-# Assemble Master Cv
+# Assemble Master CV
 
 1. Read AGENTS.md and docs/data-model.md, then run `uv run -q scripts/hunt.py status`. If contact details are empty, follow start-job-search first. Use workspace/profile.json as canonical source; do not overwrite it with a shorter resume. Read existing records before editing. Start a transcript with `uv run -q scripts/hunt.py add-interview` and write every candidate answer into it verbatim, numbered A1, A2, ...; confirmed claims that rest on an answer cite that interview source with the `A<n>` locator.
 2. Bootstrap from existing documents before interviewing. Ask for any old resumes, CVs, LinkedIn exports, or bios, in any format. For each: extract the text with your document tools, check it reads correctly, and register the original with `uv run -q scripts/hunt.py add-source FILE --id ID --kind document`. Create an entry for every role, education item, project, and credential it lists, with its dates and wording preserved, and a claim for each stated responsibility or achievement with status `proposed` and a source_ref to that document and its section. A resume's skills line becomes proposed claims on the standing `candidate-statements` entry. An old resume is the candidate's own statement, but it may be stale, compressed, or rounded, so nothing from it is confirmed until the candidate reviews it. Note discrepancies between documents as open questions rather than picking one.

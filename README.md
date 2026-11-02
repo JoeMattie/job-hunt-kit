@@ -2,14 +2,14 @@
 
 An AI coding agent runs your job search from this folder. It builds a complete record of your work history by interviewing you, learns how you write from your own writing, and drafts a resume and cover letter for each job you apply to. Nothing is invented: every line in a draft traces back to something you said or handed over.
 
-You talk; the agent does the work. You never type commands. Everything personal stays in a `workspace/` folder on your computer that is never uploaded.
+You talk; the agent does the work. You never type commands. Everything personal stays in a `workspace/` folder on your computer that is never committed to the repository; what you share with the agent does go to the agent's provider, as any chat does.
 
 ## Setup
 
 1. Get this folder onto your computer. Clone it, or download it as a ZIP from GitHub and unzip it.
 2. Open the folder in your AI coding agent.
 
-That's all. The first time the agent needs a small helper tool, it asks you before installing it.
+That's all. The first time the agent needs a small helper tool, it asks you before installing it. On Windows, the shortcuts in `.claude/skills/` may unpack as plain text files; the agent still finds the skills through `AGENTS.md`, you just will not see them as slash commands.
 
 ## Using it
 
@@ -39,11 +39,12 @@ After the first job, all of that is already built. Each new posting takes one co
 | Use review-application to check it | Final check of a packet |
 | Where do things stand? | Progress and the status of every application |
 | Back up my job search | A dated zip of your data, saved outside this folder |
+| Restore my job search from this zip | Put a backup back on a new computer |
 
 ## Keep your data safe
 
 - Everything you paste or let the agent read is sent to the agent's provider. Share your own writing and work history only. Never share other people's emails, passwords, or account numbers.
-- Back up now and then. The backup zip is the only copy of your work outside this computer.
+- Back up now and then. The backup zip is the only copy of your work outside this folder. It lands in your Documents folder by default; if Documents syncs to iCloud or another cloud drive, the zip goes there too, so pick another folder if you would rather it did not.
 - Full rules are in `docs/privacy.md`.
 
 ## Under the hood

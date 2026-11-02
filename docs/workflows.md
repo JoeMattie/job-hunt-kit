@@ -1,6 +1,6 @@
 # Operating playbook
 ## First session
-The candidate opens the folder in Claude Code and says "Use start-job-search". That skill installs uv if needed (with consent), initializes the workspace, and asks for preferred name, contact details for applications, desired roles, geography, and any existing resumes or CVs. Accept incomplete inputs and keep missing facts in open_questions. Collect career inventory and writing samples independently so one does not block the other.
+The candidate opens the folder in their AI coding agent and either pastes a job posting ("Help me apply for this job", which routes to create-targeted-resume and chains back through setup) or says "Use start-job-search". Setup installs uv if needed (with consent), initializes the workspace, and asks for preferred name, contact details for applications, desired roles, geography, and any existing resumes or CVs. Accept incomplete inputs and keep missing facts in open_questions. Collect career inventory and writing samples independently so one does not block the other.
 
 ## Skills chain
 Every skill starts by running `status`, which lists the prerequisites still missing in order: contact details, then the career inventory (ending with `cv-reviewed`), then the voice or a candidate-chosen neutral draft. A skill that finds one missing follows the prerequisite skill to completion and then resumes. So a candidate can begin with a job posting on a fresh install: the posting is saved, setup and the career interview and voice learning happen as needed, and drafting continues afterwards.
@@ -23,9 +23,9 @@ Capture posting text, URL, company, role, date, and application instructions. De
 Draft Markdown first. Optional `export` uses an existing Pandoc installation; it does not download dependencies. PDF output also requires a configured Pandoc PDF engine. When Pandoc is absent, which is the default on a fresh Mac, the agent produces the DOCX or PDF with its own document tools from the final Markdown and saves it beside it in the job folder. Inspect final pages with the relevant document/PDF tools; check page breaks, margins, bullet wrapping, links, and extracted reading order. If export tools are unavailable, deliver Markdown and say what remains. No layout approval is implied by successful export.
 
 ## Repository layout
-- `.agents/skills/`: the workflow skills. `.claude/skills/` links to the same files so Claude Code lists them as slash commands and triggers them by description. `AGENTS.md` routes requests; `CLAUDE.md` points Claude at it.
+- `.agents/skills/`: the workflow skills. `.claude/skills/` holds symbolic links to the same folders so Claude Code lists them as slash commands and triggers them by description; on Windows those links may check out as plain text files, and routing through `AGENTS.md` still works. `AGENTS.md` routes requests; `CLAUDE.md` points Claude at it.
 - `templates/`: empty JSON data contracts and Markdown output templates.
-- `workspace/`: ignored personal data, source excerpts, full CV, generated voice skill, and job packets. Create it on each machine with `init`; never copy another person's.
+- `workspace/`: ignored personal data, source excerpts, full CV, generated voice skill, and job packets. Create it on each machine with `init`, or restore the candidate's own backup zip so `workspace/` sits at the top of the folder; never copy another person's.
 - `scripts/hunt.py`: bookkeeping only. It initializes, registers writing samples, renders the full CV, scaffolds applications, validates references, backs up, and exports with Pandoc. The agent does all synthesis and writing.
 
 JSON is the canonical editable data; Markdown is the review format. The master CV keeps every detail and short resumes are generated as separate views. IDs connect sources to claims to resume and letter evidence, so every sentence in a draft can be traced back to its evidence.
@@ -43,7 +43,7 @@ uv run -q scripts/hunt.py render-cv
 uv run -q scripts/hunt.py new-job acme coordinator --url https://example.com/job --description path/to/job.txt
 uv run -q scripts/hunt.py validate
 uv run -q scripts/hunt.py refresh-snapshot acme-coordinator
-uv run -q scripts/hunt.py backup --dest /path/to/private/folder
+uv run -q scripts/hunt.py backup --dest /path/to/private/folder   # default ~/Documents/job-hunt-kit-backups, which may be cloud-synced
 uv run -q scripts/hunt.py export workspace/applications/acme-coordinator/resume.md --format docx
 uv run -q python -m unittest discover -s tests -v
 ```
@@ -51,5 +51,6 @@ uv run -q python -m unittest discover -s tests -v
 - `add-source` copies an old resume or other career document into `workspace/sources/` and registers it in profile.json as evidence. Claims extracted from it start as proposed.
 - `add-interview` starts or reopens a dated transcript registered as a source; the agent writes answers there as A1, A2, ... and claims cite them. `cv-reviewed` records that the inventory has had a full pass.
 - `validate` ignores the profile snapshot until a packet has requirements or evidence, then flags draft, reviewed, and ready applications whose profile changed. After the agent rechecks that packet's evidence, `refresh-snapshot` re-pins it. Submitted, interviewing, and closed applications are not checked. A packet with `voice_mode: neutral` may reach reviewed and ready without an approved voice.
+- `backup` zips `workspace/` with a timestamp. To restore on another machine, unzip it at the top of a fresh copy of this folder so `workspace/` is created there, then run `status`.
 - `export` needs Pandoc. If it is not installed, the agent produces the DOCX or PDF with its own document tools instead, before calling a packet ready.
 - The CLI never fetches URLs or accesses accounts. If a posting cannot be read, paste its description.
